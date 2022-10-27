@@ -33,8 +33,8 @@ function Login() {
   }
 
   return (
-    <div className="main">
-      <form className="form" onSubmit={(event) => handleSubmit(event)}>
+    <div className="login_main">
+      <form className="login_form" onSubmit={(event) => handleSubmit(event)}>
         <div className="brand">
           <img src={logo} alt="Logo" />
           <h1>snappy</h1>
