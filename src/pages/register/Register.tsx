@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
-import "./register.scss";
+import "./styles.scss";
 import { RegisterForm } from "../../utils/interfaces/registerForm.type";
 import {
   validateRequired,

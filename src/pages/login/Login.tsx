@@ -5,7 +5,7 @@ import { Toaster } from "../../utils/service/shared.service";
 import { validateRequired } from "../../utils/service/validation.service";
 import logo from "../../assets/logo.svg";
 import { LoginForm } from "../../utils/interfaces/loginForm.type";
-import "./login.scss";
+import "./styles.scss";
 function Login() {
   const [values, setValues] = useState<LoginForm>({
     userName: "",
