@@ -12,10 +12,6 @@ const onRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
     config.url != ApiRoutes.registerRoute
   ) {
     //add token to header in future
-    //imp
-    //new commit
-    //trying with diff
-    //another try
   }
   return config;
 };
