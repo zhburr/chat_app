@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import "./styles.scss";
 import { RegisterForm } from "../../utils/interfaces/registerForm.type";
@@ -10,6 +10,8 @@ import {
 } from "../../utils/service/validation.service";
 import { Toast } from "../../utils/enums/toast.enum";
 import { Toaster } from "../../utils/service/shared.service";
+import axios from "axios";
+import { ApiRoutes } from "../../utils/ApiRoutes";
 function Register() {
   const [values, setValues] = useState<RegisterForm>({
     userName: "",
@@ -17,6 +19,7 @@ function Register() {
     password: "",
     confirmPassword: "",
   });
+  const navigate = useNavigate();
 
   async function handleSubmit(event: any) {
     try {
@@ -31,9 +34,27 @@ function Register() {
         values
       );
 
-      await validateLength([["userName", "User name"]], values, 4);
-      await validatePasswordMatch(values.password, values.confirmPassword);
+      await validateLength([["userName", "User name"]], values, 3);
+      await validatePasswordMatch(values?.password!, values?.confirmPassword!);
+
+      const _data: RegisterForm = {
+        userName: values.userName,
+        email: values.email,
+        password: values.password,
+      };
+
+      const { data }: any = await axios.post(ApiRoutes.registerRoute, _data);
+      console.log(data);
+      if (!data.Succeed) {
+        Toaster(data.message ?? Toast.NO_RESOURCE, Toast.DANGER);
+      } else {
+        Toaster("User successfully created", Toast.SUCCESS);
+        localStorage.setItem("user", JSON.stringify(data.Content));
+        navigate("/");
+      }
     } catch (error: any) {
+      console.log(error);
+
       Toaster(error.message ?? Toast.NO_RESOURCE, Toast.DANGER);
     }
   }

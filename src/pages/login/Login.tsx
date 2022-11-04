@@ -1,16 +1,20 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Toast } from "../../utils/enums/toast.enum";
 import { Toaster } from "../../utils/service/shared.service";
 import { validateRequired } from "../../utils/service/validation.service";
 import logo from "../../assets/logo.svg";
 import { LoginForm } from "../../utils/interfaces/loginForm.type";
 import "./styles.scss";
+import axios from "axios";
+import { ApiRoutes } from "../../utils/ApiRoutes";
 function Login() {
   const [values, setValues] = useState<LoginForm>({
     userName: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   async function handleSubmit(event: any) {
     try {
@@ -22,6 +26,19 @@ function Login() {
         ],
         values
       );
+      const _data: LoginForm = {
+        userName: values.userName,
+        password: values.password,
+      };
+      const { data }: any = await axios.post(ApiRoutes.loginRoute, _data);
+      console.log(data);
+      if (!data.Succeed) {
+        Toaster(data.message ?? Toast.NO_RESOURCE, Toast.DANGER);
+      } else {
+        Toaster("Sucessfully logged in", Toast.SUCCESS);
+        localStorage.setItem("user", JSON.stringify(data.Content));
+        navigate("/");
+      }
     } catch (error: any) {
       Toaster(error.message ?? Toast.NO_RESOURCE, Toast.DANGER);
     }
