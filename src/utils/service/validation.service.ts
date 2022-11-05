@@ -2,6 +2,7 @@ export function validateRequired(fields: any, body: any) {
   return new Promise((resolve, reject) => {
     fields.forEach((element: any, index: number) => {
       if (
+        !body[fields[index][0]] ||
         body[fields[index][0]] === "" ||
         body[fields[index][0]] === " " ||
         body[fields[index][0]]?.length === 0 ||
@@ -10,7 +11,7 @@ export function validateRequired(fields: any, body: any) {
           !body[fields[index][0]].replace(/\s/g, "").length)
       ) {
         reject({
-          message: `${fields[index][1]} must not contain only white spaces`,
+          message: `${fields[index][1]} is required`,
         });
       }
     });

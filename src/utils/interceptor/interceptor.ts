@@ -1,17 +1,23 @@
-import {
+import axios, {
   AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
 } from "axios";
 import { ApiRoutes } from "../ApiRoutes";
-
+import { refreshAccessToken } from "../service/shared.service";
+const axiosApiInstance = axios.create();
 const onRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
   if (
-    config.url != ApiRoutes.loginRoute ||
-    config.url != ApiRoutes.registerRoute
+    config.url != ApiRoutes.loginRoute &&
+    config.url != ApiRoutes.registerRoute &&
+    !config.url!.includes(ApiRoutes.getRandomAvatar)
   ) {
-    //add token to header in future
+    const value = localStorage.getItem("user");
+    const keys = JSON.parse(value!);
+    config.headers = {
+      "x-access-token": `${keys.access_token}`,
+    };
   }
   return config;
 };
@@ -24,7 +30,14 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
   return response;
 };
 
-const onResponseError = (error: AxiosError): Promise<AxiosError> => {
+const onResponseError = async (error: AxiosError): Promise<AxiosError> => {
+  const originalRequest = error.config;
+  if (error.response!.status === 403) {
+    // originalRequest._retry = true;
+    const access_token = await refreshAccessToken();
+    axios.defaults.headers.common["x-access-token"] = access_token;
+    return axiosApiInstance(originalRequest!);
+  }
   return Promise.reject(error);
 };
 

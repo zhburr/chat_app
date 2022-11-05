@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import "./styles.scss";
@@ -20,6 +20,12 @@ function Register() {
     confirmPassword: "",
   });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
+    }
+  }, []);
 
   async function handleSubmit(event: any) {
     try {
@@ -53,8 +59,6 @@ function Register() {
         navigate("/");
       }
     } catch (error: any) {
-      console.log(error);
-
       Toaster(error.message ?? Toast.NO_RESOURCE, Toast.DANGER);
     }
   }
