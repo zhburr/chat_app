@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import "./styles.scss";
@@ -50,7 +50,6 @@ function Register() {
       };
 
       const { data }: any = await axios.post(ApiRoutes.registerRoute, _data);
-      console.log(data);
       if (!data.Succeed) {
         Toaster(data.message ?? Toast.NO_RESOURCE, Toast.DANGER);
       } else {

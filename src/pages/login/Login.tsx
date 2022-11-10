@@ -37,7 +37,6 @@ function Login() {
         password: values.password,
       };
       const { data }: any = await axios.post(ApiRoutes.loginRoute, _data);
-      console.log(data);
       if (!data.Succeed) {
         Toaster(data.message ?? Toast.NO_RESOURCE, Toast.DANGER);
       } else {

@@ -21,23 +21,31 @@ export function Toaster(message: string, type: string) {
   }
 }
 
-export async function refreshAccessToken() {
-  try {
-    const _data = {
-      refreshToken: JSON.parse(localStorage.getItem("user")!).refreshToken,
-    };
-    console.log(_data);
-
-    const { data }: any = await axios.post(ApiRoutes.refreshToken, _data);
-    if (data.Succeed) {
-      let user = JSON.parse(localStorage.getItem("user")!);
-      user.token = data.Content.token;
-      localStorage.setItem("user", JSON.stringify(user));
-      return user.token;
-    } else {
-      Toaster(data.message ?? Toast.NO_RESOURCE, Toast.DANGER);
-    }
-  } catch (error: any) {
-    Toaster(error.message ?? Toast.NO_RESOURCE, Toast.DANGER);
+export function routeToLogin(error: any) {
+  if (error.logout) {
+    localStorage.clear();
+    window.location.replace("/login");
   }
+}
+
+export async function refreshAccessToken(): Promise<string> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const _data = {
+        refreshToken: JSON.parse(localStorage.getItem("user")!).refreshToken,
+      };
+
+      const { data }: any = await axios.post(ApiRoutes.refreshToken, _data);
+      if (data.Succeed) {
+        let user = JSON.parse(localStorage.getItem("user")!);
+        user.token = data.Content.token;
+        localStorage.setItem("user", JSON.stringify(user));
+        resolve(user.token);
+      } else {
+        reject("");
+      }
+    } catch (error: any) {
+      reject("");
+    }
+  });
 }
