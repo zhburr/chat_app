@@ -4,7 +4,7 @@ import loader from "../../assets/loader.gif";
 import axios from "axios";
 import { ApiRoutes } from "../../utils/ApiRoutes";
 import { Buffer } from "buffer";
-import { Toaster } from "../../utils/service/shared.service";
+import { routeToLogin, Toaster } from "../../utils/service/shared.service";
 import { Toast } from "../../utils/enums/toast.enum";
 import { validateRequired } from "../../utils/service/validation.service";
 function SetAvatar() {
@@ -34,8 +34,16 @@ function SetAvatar() {
         avatar: avatars[selectedAvatar],
       };
       await validateRequired([["avatar", "Avatar"]], _data);
+      const { data } = await axios.post(ApiRoutes.setUserAvatar, _data);
+      console.log(data);
+
+      if (!data.Succeed) {
+        Toaster(data.message ?? Toast.NO_RESOURCE, Toast.DANGER);
+        routeToLogin(data);
+      }
     } catch (error: any) {
       Toaster(error.message ?? Toast.NO_RESOURCE, Toast.DANGER);
+      routeToLogin(error.response.data);
     }
   };
 
