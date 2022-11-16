@@ -4,4 +4,5 @@ export class ApiRoutes {
   public static loginRoute = `${this.HOST}/api/auth/login`;
   public static getRandomAvatar = `https://api.multiavatar.com/45678945`;
   public static refreshToken = `${this.HOST}/api/auth/refreshToken`;
+  public static setUserAvatar = `${this.HOST}/api/auth/setUserAvatar`;
 }

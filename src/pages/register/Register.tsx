@@ -55,7 +55,7 @@ function Register() {
       } else {
         Toaster("User successfully created", Toast.SUCCESS);
         localStorage.setItem("user", JSON.stringify(data.Content));
-        navigate("/");
+        navigate("/setAvatar");
       }
     } catch (error: any) {
       Toaster(error.message ?? Toast.NO_RESOURCE, Toast.DANGER);

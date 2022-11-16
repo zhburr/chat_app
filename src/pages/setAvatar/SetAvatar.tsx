@@ -7,10 +7,12 @@ import { Buffer } from "buffer";
 import { routeToLogin, Toaster } from "../../utils/service/shared.service";
 import { Toast } from "../../utils/enums/toast.enum";
 import { validateRequired } from "../../utils/service/validation.service";
+import { useNavigate } from "react-router-dom";
 function SetAvatar() {
   const [avatars, setAvatars] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState<number>(NaN);
+  const navigate = useNavigate();
 
   const getRandomAvatar = async () => {
     const data = [];
@@ -35,15 +37,19 @@ function SetAvatar() {
       };
       await validateRequired([["avatar", "Avatar"]], _data);
       const { data } = await axios.post(ApiRoutes.setUserAvatar, _data);
-      console.log(data);
 
       if (!data.Succeed) {
         Toaster(data.message ?? Toast.NO_RESOURCE, Toast.DANGER);
         routeToLogin(data);
+      } else {
+        const user = JSON.parse(localStorage.getItem("user")!);
+        user.avatar = data.Content.avatar;
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate("/");
       }
     } catch (error: any) {
       Toaster(error.message ?? Toast.NO_RESOURCE, Toast.DANGER);
-      routeToLogin(error.response.data);
+      routeToLogin(error?.response?.data);
     }
   };
 
